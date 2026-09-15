@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+        <header>
+        <h1>Game Dashboard</h1>
+        <button id="themeButton">Dark Mode</button>
+    </header>
+
+    <main>
+        <section class="games">
+    <div class="game-card">
+        <h3 id="game1">Roblox</h3>
+        <p>Top game</p>
+        <button class="favorite">☆ Favorite</button>
+    </div>
+
+    <div class="game-card">
+        <h3 id="game2">Minecraft</h3>
+        <p>Top game</p>
+        <button class="favorite">☆ Favorite</button>
+    </div>
+
+    <div class="game-card">
+        <h3 id="game3">Hollow Knight</h3>
+        <p>Top game</p>
+        <button class="favorite">☆ Favorite</button>
+    </div>
+</section>
+
+<button id="editGames">Edit Top 3</button>
+
+<section id="gameSetup" class="setup">
+    <h2>Choose your Top 3</h2>
+
+    <input id="gameInput1" type="text" placeholder="Game 1">
+    <input id="gameInput2" type="text" placeholder="Game 2">
+    <input id="gameInput3" type="text" placeholder="Game 3">
+
+    <button id="saveGames">Save</button>
+</section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

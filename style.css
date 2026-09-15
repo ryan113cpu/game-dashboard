@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    margin: 0;
+}
+
+button {
+    border: 0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome p {
+    color: #aaa;
+}
+
+.games {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.game-card {
+    background: #1f2937;
+    padding: 20px;
+    width: 220px;
+    border-radius: 12px;
+}
+
+.game-card p {
+    color: #aaa;
+}
+
+.favorite {
+    background: #374151;
+    color: white;
+}
