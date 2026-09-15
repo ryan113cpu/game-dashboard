@@ -37,3 +37,23 @@ saveGames.addEventListener("click", () => {
 
     gameSetup.style.display = "none";
 });
+let favoriteButtons = document.querySelectorAll(".favorite");
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+favoriteButtons.forEach((button, index) => {
+    if (favorites.includes(index)) {
+        button.textContent = "★ Favorited";
+    }
+
+    button.addEventListener("click", () => {
+        if (favorites.includes(index)) {
+            favorites = favorites.filter((item) => item !== index);
+            button.textContent = "☆ Favorite";
+        } else {
+            favorites.push(index);
+            button.textContent = "★ Favorited";
+        }
+
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    });
+});
