@@ -19,9 +19,15 @@ editGames.addEventListener("click", () => {
 });
 
 saveGames.addEventListener("click", () => {
-    games[0] = document.getElementById("gameInput1").value;
-    games[1] = document.getElementById("gameInput2").value;
-    games[2] = document.getElementById("gameInput3").value;
+    let game1 = document.getElementById("gameInput1").value.trim();
+    let game2 = document.getElementById("gameInput2").value.trim();
+    let game3 = document.getElementById("gameInput3").value.trim();
+
+    if (!game1 || !game2 || !game3) {
+        return;
+    }
+
+    games = [game1, game2, game3];
 
     localStorage.setItem("games", JSON.stringify(games));
 
