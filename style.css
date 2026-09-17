@@ -48,6 +48,15 @@ button {
     color: #aaa;
 }
 
+.game-card span {
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+.game-card button {
+    margin-top: 5px;
+}
+
 .favorite {
     background: #374151;
     color: white;

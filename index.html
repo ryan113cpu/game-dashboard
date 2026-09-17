@@ -11,7 +11,10 @@
     <div id="dashboard-content" style="display: none;">
         <header>
             <h1>Game Dashboard</h1>
-            <button id="themeButton">Dark Mode</button>
+            <div>
+                <button id="logoutButton" style="background-color: #ef4444; color: white; margin-right: 10px;">Log Out</button>
+                <button id="themeButton">Dark Mode</button>
+            </div>
         </header>
 
         <main>
@@ -19,19 +22,25 @@
                 <div class="game-card">
                     <h3 id="game1">Roblox</h3>
                     <p>Top game</p>
+                    <p>Playtime: <span id="hours1">0.00</span> hours</p>
                     <button class="favorite">☆ Favorite</button>
+                    <button id="timerBtn1" onclick="toggleTimer(0)">▶ Start Playing</button>
                 </div>
 
                 <div class="game-card">
                     <h3 id="game2">Minecraft</h3>
                     <p>Top game</p>
+                    <p>Playtime: <span id="hours2">0.00</span> hours</p>
                     <button class="favorite">☆ Favorite</button>
+                    <button id="timerBtn2" onclick="toggleTimer(1)">▶ Start Playing</button>
                 </div>
 
                 <div class="game-card">
                     <h3 id="game3">Hollow Knight</h3>
                     <p>Top game</p>
+                    <p>Playtime: <span id="hours3">0.00</span> hours</p>
                     <button class="favorite">☆ Favorite</button>
+                    <button id="timerBtn3" onclick="toggleTimer(2)">▶ Start Playing</button>
                 </div>
             </section>
 
