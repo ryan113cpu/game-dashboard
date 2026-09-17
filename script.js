@@ -37,6 +37,7 @@ saveGames.addEventListener("click", () => {
 
     gameSetup.style.display = "none";
 });
+
 let favoriteButtons = document.querySelectorAll(".favorite");
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
@@ -56,4 +57,40 @@ favoriteButtons.forEach((button, index) => {
 
         localStorage.setItem("favorites", JSON.stringify(favorites));
     });
+});
+
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const messageBox = document.getElementById('message-box');
+  
+  if (localStorage.getItem(email)) {
+    messageBox.textContent = "❌ An account with this email already exists.";
+    messageBox.style.color = "red";
+    return;
+  }
+
+  localStorage.setItem(email, password);
+  messageBox.textContent = "🎉 Account created! Now try logging in below.";
+  messageBox.style.color = "green";
+  document.getElementById('signup-form').reset();
+});
+
+document.getElementById('login-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const messageBox = document.getElementById('message-box');
+  const savedPassword = localStorage.getItem(email);
+
+  if (savedPassword && savedPassword === password) {
+    messageBox.textContent = "🎉 Welcome back! You are logged in.";
+    messageBox.style.color = "green";
+    
+    document.getElementById('auth-screen').style.display = 'none';
+  } else {
+    messageBox.textContent = "❌ Invalid email or password.";
+    messageBox.style.color = "red";
+  }
 });
