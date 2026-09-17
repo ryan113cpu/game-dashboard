@@ -89,6 +89,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     messageBox.style.color = "green";
     
     document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
   } else {
     messageBox.textContent = "❌ Invalid email or password.";
     messageBox.style.color = "red";
