@@ -178,7 +178,7 @@
 
     <script>
         let games = JSON.parse(localStorage.getItem("games")) || ["Roblox", "Minecraft", "Hollow Knight"];
-        let playtimes = JSON.parse(localStorage.getItem("playtimes")) ||;
+        let playtimes = JSON.parse(localStorage.getItem("playtimes")) || [0, 0, 0];
         let activeTimers = [null, null, null];
 
         const gameSetup = document.getElementById("gameSetup");
