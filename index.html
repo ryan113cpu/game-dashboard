@@ -197,7 +197,6 @@
 
         editGames.addEventListener("click", () => {
             gameSetup.style.display = "block";
-
             document.getElementById("gameInput1").value = games[0];
             document.getElementById("gameInput2").value = games[1];
             document.getElementById("gameInput3").value = games[2];
@@ -238,7 +237,6 @@
                     favorites.push(index);
                     button.textContent = "★ Favorited";
                 }
-
                 localStorage.setItem("favorites", JSON.stringify(favorites));
             });
         });
@@ -256,12 +254,10 @@
                 let startTime = activeTimers[index];
                 let endTime = Date.now();
                 let msElapsed = endTime - startTime;
-                
                 let hoursElapsed = msElapsed / (1000 * 60 * 60);
                 
                 playtimes[index] += hoursElapsed;
                 localStorage.setItem("playtimes", JSON.stringify(playtimes));
-                
                 display.textContent = playtimes[index].toFixed(2);
                 
                 activeTimers[index] = null;
@@ -272,18 +268,51 @@
         }
 
         document.getElementById("themeButton").addEventListener("click", () => {
-            document.body.classList.toggle("dark");
+            if (document.body.style.background === "rgb(17, 24, 39)" || document.body.style.background === "") {
+                document.body.style.background = "#ffffff";
+                document.body.style.color = "#000000";
+            } else {
+                document.body.style.background = "#111827";
+                document.body.style.color = "#ffffff";
+            }
         });
 
         document.getElementById('signup-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
-            const messageBox = document.getElementById('message-box');
-            
-            if (localStorage.getItem(email)) {
-                messageBox.textContent = "❌ An account with this email already exists.";
-                messageBox.style.color = "red";
-                return;
-            }
+const messageBox = document.getElementById('message-box');
+if (localStorage.getItem(email)) {
+messageBox.textContent = "❌ An account with this email already exists.";
+messageBox.style.color = "red";
+return;
+}
+localStorage.setItem(email, password);
+messageBox.textContent = "🎉 Account created! Now try logging in below.";
+messageBox.style.color = "green";
+document.getElementById('signup-form').reset();
+});
+document.getElementById('login-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const email = document.getElementById('login-email').value;
+const password = document.getElementById('login-password').value;
+const messageBox = document.getElementById('message-box');
+const savedPassword = localStorage.getItem(email);
+if (savedPassword && savedPassword === password) {
+messageBox.textContent = "🎉 Welcome back! You are logged in.";
+messageBox.style.color = "green";
+document.getElementById('auth-screen').style.display = 'none';
+document.getElementById('dashboard-content').style.display = 'block';
+} else {
+messageBox.textContent = "❌ Invalid email or password.";
+messageBox.style.color = "red";
+}
+});
+document.getElementById('logoutButton').addEventListener('click', () => {
+document.getElementById('dashboard-content').style.display = 'none';
+document.getElementById('auth-screen').style.display = 'block';
+document.getElementById('login-form').reset();
+document.getElementById('message-box').textContent = "";
+});
 
+        
