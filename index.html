@@ -1,85 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Dashboard</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --card: #eeeeee;
+      --blue: #0070f3;
+    }
+
+    body.dark {
+      --bg: #222222;
+      --text: #ffffff;
+      --card: #333333;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: sans-serif;
+      padding: 15px;
+      margin: 0;
+      transition: 0.2s;
+    }
+
+    header, .card, form {
+      background-color: var(--card);
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    button {
+      background-color: var(--blue);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      margin: 4px 2px 0 0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      max-width: 250px;
+      padding: 6px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="dashboard-content" style="display: none;">
-        <header>
-            <h1>Game Dashboard</h1>
-            <div>
-                <button id="logoutButton" style="background-color: #ef4444; color: white; margin-right: 10px;">Log Out</button>
-                <button id="themeButton">Dark Mode</button>
+  <header>
+    <h3 style="margin: 0;">Game Dashboard</h3>
+    <div>
+      <button id="themeBtn">Dark Mode</button>
+      <button id="logoutBtn" class="hidden">Log Out</button>
+    </div>
+  </header>
+
+  <div id="authPanel">
+    <form id="signupForm">
+      <h3>Sign Up</h3>
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Create Account</button>
+    </form>
+
+    <form id="loginForm">
+      <h3>Log In</h3>
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+
+  <div id="mainPanel" class="hidden">
+    <div id="gamesGrid" class="grid"></div>
+    
+    <button id="editBtn" style="margin-top: 15px;">Edit Top 3</button>
+    
+    <div id="editModal" class="hidden" style="margin-top: 15px; padding: 15px; border: 1px solid #888; border-radius: 6px;">
+      <h4>Choose your Top 3</h4>
+      <div id="choices"></div>
+      <button id="saveBtn" style="margin-top: 10px;">Save Choices</button>
+    </div>
+  </div>
+
+  <script>
+    let user = null;
+    let darkTheme = false;
+
+    let games = [
+      { id: 0, name: 'Roblox', playtime: 0, favorite: false, visible: true },
+      { id: 1, name: 'Minecraft', playtime: 0, favorite: false, visible: true },
+      { id: 2, name: 'Hollow Knight', playtime: 0, favorite: false, visible: true },
+      { id: 3, name: 'Fortnite', playtime: 0, favorite: false, visible: false },
+      { id: 4, name: 'Valorant', playtime: 0, favorite: false, visible: false }
+    ];
+
+    function render() {
+      if (user) {
+        document.getElementById('authPanel').classList.add('hidden');
+        document.getElementById('mainPanel').classList.remove('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('authPanel').classList.remove('hidden');
+        document.getElementById('mainPanel').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
+      }
+
+      if (!user) return;
+
+      let gridHtml = '';
+      for (let i = 0; i < games.length; i++) {
+        if (games[i].visible) {
+          let favText = games[i].favorite ? '★ Favorite' : '☆ Favorite';
+          gridHtml += `
+            <div class="card">
+              <h4 style="margin: 0 0 8px 0;">${games[i].name}</h4>
+              <p style="margin: 4px 0; font-size: 0.9em; opacity: 0.8;">Top game</p>
+              <p style="margin: 4px 0; font-size: 0.9em;">Playtime: ${games[i].playtime.toFixed(2)} hours</p>
+              <button onclick="toggleFavorite(${games[i].id})">${favText}</button>
+              <button onclick="addPlaytime(${games[i].id})" style="background-color: #0070f3;">▶ Start Playing</button>
             </div>
-        </header>
+          `;
+        }
+      }
+      document.getElementById('gamesGrid').innerHTML = gridHtml;
 
-        <main>
-            <section class="games">
-                <div class="game-card">
-                    <h3 id="game1">Roblox</h3>
-                    <p>Top game</p>
-                    <p>Playtime: <span id="hours1">0.00</span> hours</p>
-                    <button class="favorite">☆ Favorite</button>
-                    <button id="timerBtn1" onclick="toggleTimer(0)">▶ Start Playing</button>
-                </div>
+      let choicesHtml = '';
+      for (let i = 0; i < games.length; i++) {
+        let checked = games[i].visible ? 'checked' : '';
+        choicesHtml += `
+          <label style="display: block; margin: 6px 0;">
+            <input type="checkbox" data-id="${games[i].id}" ${checked}> ${games[i].name}
+          </label>
+        `;
+      }
+      document.getElementById('choices').innerHTML = choicesHtml;
+    }
 
-                <div class="game-card">
-                    <h3 id="game2">Minecraft</h3>
-                    <p>Top game</p>
-                    <p>Playtime: <span id="hours2">0.00</span> hours</p>
-                    <button class="favorite">☆ Favorite</button>
-                    <button id="timerBtn2" onclick="toggleTimer(1)">▶ Start Playing</button>
-                </div>
+    window.toggleFavorite = function(id) {
+      let game = games.find(g => g.id === id);
+      if (game) game.favorite = !game.favorite;
+      render();
+    };
 
-                <div class="game-card">
-                    <h3 id="game3">Hollow Knight</h3>
-                    <p>Top game</p>
-                    <p>Playtime: <span id="hours3">0.00</span> hours</p>
-                    <button class="favorite">☆ Favorite</button>
-                    <button id="timerBtn3" onclick="toggleTimer(2)">▶ Start Playing</button>
-                </div>
-            </section>
+    window.addPlaytime = function(id) {
+      let game = games.find(g => g.id === id);
+      if (game) game.playtime += 0.25;
+      render();
+    };
 
-            <button id="editGames">Edit Top 3</button>
+    document.getElementById('themeBtn').onclick = function() {
+      darkTheme = !darkTheme;
+      document.body.classList.toggle('dark', darkTheme);
+    };
 
-            <section id="gameSetup" class="setup">
-                <h2>Choose your Top 3</h2>
-                <input id="gameInput1" type="text" placeholder="Game 1">
-                <input id="gameInput2" type="text" placeholder="Game 2">
-                <input id="gameInput3" type="text" placeholder="Game 3">
-                <button id="saveGames">Save</button>
-            </section>
-        </main>
-    </div>
+    document.getElementById('logoutBtn').onclick = function() {
+      user = null;
+      render();
+    };
 
-    <div class="auth-container" id="auth-screen">
-        <div id="signup-box">
-          <h2>Create Account</h2>
-          <form id="signup-form">
-            <input type="email" id="signup-email" placeholder="Choose an Email" required><br><br>
-            <input type="password" id="signup-password" placeholder="Create a Password" required><br><br>
-            <button type="submit">Sign Up</button>
-          </form>
-        </div>
+    function loginUser(event) {
+      event.preventDefault();
+      user = event.target.querySelector('input[type="text"]').value;
+      render();
+    }
 
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+    document.getElementById('signupForm').onsubmit = loginUser;
+    document.getElementById('loginForm').onsubmit = loginUser;
 
-        <div id="login-box">
-          <h2>Log In</h2>
-          <form id="login-form">
-            <input type="email" id="login-email" placeholder="Your Email" required><br><br>
-            <input type="password" id="login-password" placeholder="Your Password" required><br><br>
-            <button type="submit">Log In</button>
-          </form>
-        </div>
-        
-        <p id="message-box" style="margin-top: 15px; font-weight: bold;"></p>
-    </div>
+    document.getElementById('editBtn').onclick = function() {
+      document.getElementById('editModal').classList.toggle('hidden');
+    };
 
-    <script src="script.js"></script>
+    document.getElementById('saveBtn').onclick = function() {
+      let inputs = document.getElementById('choices').querySelectorAll('input');
+      inputs.forEach(input => {
+        let gameId = parseInt(input.dataset.id);
+        let game = games.find(g => g.id === gameId);
+        if (game) game.visible = input.checked;
+      });
+      document.getElementById('editModal').classList.add('hidden');
+      render();
+    };
+
+    render();
+  </script>
 </body>
 </html>
